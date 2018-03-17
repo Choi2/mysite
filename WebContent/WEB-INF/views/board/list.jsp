@@ -67,7 +67,7 @@
 							</c:choose>
 									<a href="/mysite/board?page=${status.index - 1}">${status.index}</a></li>
 						</c:forEach>
-						<c:if test="${boardSize == 25}">
+						<c:if test="${boardSize > 25}">
 							<li><a href="/mysite/board?page=${pager.endPage}">▶</a></li>
 						</c:if>
 					</ul>

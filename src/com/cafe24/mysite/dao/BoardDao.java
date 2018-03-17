@@ -5,11 +5,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.cafe24.mysite.vo.BoardVo;
+import com.cafe24.mysite.vo.CommentVo;
 
 public class BoardDao {
 
@@ -175,6 +175,54 @@ public class BoardDao {
 				pstmt.setLong(6, vo.getUserNo());
 			}
 		
+			// 5. SQL문 실행
+			int count = pstmt.executeUpdate(); //열의 갯수를 리턴함!
+			
+			result = (count != 0);
+			
+			// 6. 결과 처리
+			if (count == 0) {
+				System.out.println("실패!");
+			} else {
+				System.out.println("성공!");
+			}
+
+		}  catch (SQLException e) {
+			System.out.println("에러:" + e);
+		} finally {
+			// 자원정리(Clean-Up)
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+	
+	
+	public boolean insertComment(CommentVo vo) {
+		boolean result = false;
+		Connection conn = null;
+
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = getConnection();
+			// 3. SQL 준비
+
+			 String	sql = "insert into comment values(null, ?, now(), ?, ?)";
+				pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+				pstmt.setString(1, vo.getContent());
+				pstmt.setLong(2, vo.getBoardNo());
+				pstmt.setLong(3, vo.getUserNo());
+				
 			// 5. SQL문 실행
 			int count = pstmt.executeUpdate(); //열의 갯수를 리턴함!
 			
@@ -379,7 +427,7 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 			// 3. SQL 준비
-			String sql = "select * from board limit ?, 25";
+			String sql = "select * from board limit ?, 26";
 			pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
 			
 			pstmt.setInt(1, currentGroupPage);
@@ -409,6 +457,56 @@ public class BoardDao {
 		}
 
 		return 0;
+	}
+
+	public List<CommentVo> getCommentList() {
+		List<CommentVo> list = new ArrayList<CommentVo>();
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			
+			conn = getConnection();
+
+			// 4. SQL 실행
+			String sql = "select * from comment";
+			
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				CommentVo vo = new CommentVo();
+				vo.setNo(rs.getLong(1));
+				vo.setContent(rs.getString(2));
+				vo.setRegDate(rs.getString(3));
+				vo.setBoardNo(rs.getLong(4));
+				vo.setUserNo(rs.getLong(5));
+				vo.setName(new UserDao().get(rs.getLong(5)).getName());
+				list.add(vo);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("에러:" + e);
+		} finally {
+			// 자원정리(Clean-Up)
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return list;
 	}
 	
 }

@@ -42,6 +42,50 @@
 				</div>
 			</div>
 		</div>
+		
+<%-- 
+		<div id="content">
+			<div id="comment">
+			
+			<c:set var="count" value="${fn:length(commentList)}"/>
+			<ul>
+	 			<c:forEach items="${commentList}" var="vo" varStatus="status">	
+	 			<li>
+					<table width="510" border="1">
+						<tr>
+							<td>[${status.count}]</td>
+							<td>${vo.name}</td>
+							<td>${vo.regDate}</td>
+							<c:if test="${sessionScope.authUser.no eq vo.userNo}">
+								<td><a href="/board?a=deletecomment&no=${vo.no}">삭제</a></td>
+							</c:if>
+						</tr>
+						<tr>
+							<td colspan="4">${vo.content}</td>
+						</tr>
+					</table>	
+				</li>			
+				</c:forEach>
+			</ul>
+				
+				<c:if test="${sessionScope.authUser ne null}">
+					<form action="/mysite/board" method="post">
+						<input type="hidden" name="a" value="insert">
+						<input type="hidden" name="no" value="${param.no}">
+						<table>
+							<tr>
+								<td colspan=4><textarea name="content" id="content"></textarea></td>
+							</tr>
+							<tr>
+								<td colspan=4 align=right><input type="submit" VALUE=" 확인 "></td>
+							</tr>
+						</table>
+					</form>
+				</c:if>
+				
+			</div>
+		</div> --%>
+
 		<c:import url="/WEB-INF/views/includes/navigation.jsp">
 			<c:param name="menu" value="board"/>
 		</c:import>
