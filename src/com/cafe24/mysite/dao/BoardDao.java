@@ -4,13 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.cafe24.mysite.vo.BoardVo;
-import com.cafe24.mysite.vo.UserVo;
 
 public class BoardDao {
 
@@ -58,7 +57,10 @@ public class BoardDao {
 				result.setTitle(rs.getString(2));
 				result.setContent(rs.getString(3));
 				result.setRegDate(rs.getString(5));
-				result.setUserNo(rs.getInt(6));
+				result.setGroupNo(rs.getInt(6));
+				result.setOrderNo(rs.getInt(7));
+				result.setDepth(rs.getInt(8));
+				result.setUserNo(rs.getInt(9));
 			}
 			
 		} catch (SQLException e) {
@@ -141,16 +143,38 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 			// 3. SQL 준비
-			String sql = "insert into board values(null, ?, ?, 0, now(), ?)";
-			pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
-
-			// 4. 데이터 바인딩(binding)
+			String sql = "";
 			
-			pstmt.setString(1, vo.getTitle());
-			pstmt.setString(2, vo.getContent());
-			pstmt.setLong(3, vo.getUserNo());
 
-			
+			// 4. 데이터 바인딩(binding)  
+
+			if(vo.getOrderNo() == 0) {
+				sql = "insert into board(no, title,content, read_count, reg_date, group_no, order_no, depth, user_no )  select \r\n" + 
+						" null, " + 
+						" ?, " + 
+						" ?, " + 
+						" 0, " + 
+						" now(), " + 
+						" max(no) + 1, " + 
+						" 1, " + 
+						" 0, " + 
+						" ?  " +
+						" from board";
+				pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+				pstmt.setString(1, vo.getTitle());
+				pstmt.setString(2, vo.getContent());
+				pstmt.setLong(3, vo.getUserNo());
+			} else {
+				sql = "insert into board values(null, ?, ?, 0, now(), ?, ?, ?, ?)";
+				pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+				pstmt.setString(1, vo.getTitle());
+				pstmt.setString(2, vo.getContent());
+				pstmt.setLong(3, vo.getGroupNo());
+				pstmt.setLong(4, vo.getOrderNo() + 1);
+				pstmt.setLong(5, vo.getDepth() + 1);
+				pstmt.setLong(6, vo.getUserNo());
+			}
+		
 			// 5. SQL문 실행
 			int count = pstmt.executeUpdate(); //열의 갯수를 리턴함!
 			
@@ -195,7 +219,21 @@ public class BoardDao {
 			conn = getConnection();
 
 			// 4. SQL 실행
-			String sql = "select * from board order by no desc limit ?, 5 ";
+			String sql = "select no,"
+					+ "  title, "
+					+ "  read_count, "
+					+ "  reg_date, "
+					+ "  group_no, "
+					+ "  order_no, "
+					+ "  depth, "
+					+ "  user_no, "
+					+ " @rownum := @rownum + 1 as RNUM "
+					+ " from board,"
+					+ " (select @rownum :=0) as R "
+					+ " order by group_no desc,"
+					+ " order_no,"
+					+ " depth"
+					+ " limit ?, 5 ";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, currentDataSizePerPage);
@@ -205,11 +243,13 @@ public class BoardDao {
 				BoardVo vo = new BoardVo();
 				vo.setNo(rs.getLong(1));
 				vo.setTitle(rs.getString(2));
-				vo.setContent(rs.getString(3));
-				vo.setReadCount(rs.getInt(4));
-				vo.setRegDate(rs.getString(5));
-				vo.setUserNo(rs.getLong(6));
-				vo.setName(new UserDao().get(rs.getLong(6)).getName());
+				vo.setReadCount(rs.getInt(3));
+				vo.setRegDate(rs.getString(4));
+				vo.setGroupNo(rs.getLong(5));
+				vo.setOrderNo(rs.getLong(6));
+				vo.setDepth(rs.getLong(7));
+				vo.setUserNo(rs.getLong(8));
+				vo.setName(new UserDao().get(rs.getLong(8)).getName());
 				list.add(vo);
 			}
 			

@@ -18,12 +18,18 @@ public class AddAction implements Action {
 		String userNo = request.getParameter("userno");
 		String title = request.getParameter("title");
 		String content = request.getParameter("content");
-		
+		int groupNo = Integer.parseInt(request.getParameter("groupno"));
+		int orderNo = Integer.parseInt(request.getParameter("otherno"));
+		int depth = Integer.parseInt(request.getParameter("depth")) ;
+
 		BoardDao dao = new BoardDao();
 		BoardVo vo = new BoardVo();
 		vo.setUserNo(Integer.parseInt(userNo));
 		vo.setTitle(title);
-		vo.setContent(content);			
+		vo.setContent(content);	
+		vo.setGroupNo(groupNo);
+		vo.setOrderNo(orderNo);
+		vo.setDepth(depth);
 		dao.insert(vo);
 		System.out.println(vo);
 		WebUtil.redirect(request, response, "/mysite/board");

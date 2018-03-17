@@ -28,7 +28,6 @@ public class ListAction implements Action{
 						? 0 : Integer.parseInt(request.getParameter("page"));
 		int currentDataSizePerPage = currentPage * ConstantVariables.PAGE_SIZE;
 		int currentGroupPage = currentPage / ConstantVariables.PAGE_SIZE;
-		System.out.println("currentGroupPage : " + currentGroupPage);
 		int boardSize = dao.getCount(currentGroupPage * ConstantVariables.GROUP_SIZE);
 		System.out.println("size = " + boardSize);
 		Pager pager = new Pager(currentGroupPage, boardSize);
@@ -43,6 +42,7 @@ public class ListAction implements Action{
 		request.setAttribute("userNo", vo == null ? "" : vo.getNo());
 		request.setAttribute("list", list);
 		request.setAttribute("pager", pager);
+		request.setAttribute("boardSize", boardSize);
 		request.setAttribute("page", currentPage);
 		System.out.println(pager);
 		//forwarding

@@ -29,19 +29,25 @@
 						<th>&nbsp;</th>
 					</tr>
 					<c:forEach items="${list}" var="vo" varStatus="status">				
-					<tr>
-						<td>${vo.no}</td>
-						<td>
-							<a href="/mysite/board?a=view&no=${vo.no}">${vo.title}</a></td>
-						<td>${vo.name}</td>
-						<td>${vo.readCount}</td>
-						<td>${vo.regDate}</td>
-						<td>
-							<c:if test="${sessionScope.authUser.no eq vo.userNo}">
-								<a href="/mysite/board?a=delete&no=${vo.no}" class="del">삭제</a>
+						<tr>
+							<td>${vo.no}</td>
+	
+							<td style="text-align:left; padding-left:${(vo.depth) * 20}px">
+							<c:if test="${vo.depth > 0}">
+								<img src="/mysite/assets/images/reply.png"/>
 							</c:if>
-						</td>
-					</tr>
+								<a href="/mysite/board?a=view&no=${vo.no}">${vo.title}</a>
+							</td>
+
+							<td>${vo.name}</td>
+							<td>${vo.readCount}</td>
+							<td>${vo.regDate}</td>
+							<td>
+								<c:if test="${sessionScope.authUser.no eq vo.userNo}">
+									<a href="/mysite/board?a=delete&no=${vo.no}" class="del">삭제</a>
+								</c:if>
+							</td>
+						</tr>
 					</c:forEach>
 				</table>
 				<c:set var="count" value="${fn:length(list)}"/>
@@ -50,7 +56,7 @@
 						<c:if test="${pager.startGroupPage > 0}">
 							<li><a href="/mysite/board?page=${pager.startPage - 2}">◀</a></li>
 						</c:if>
-						<c:forEach begin="${pager.startPage}" end="${pager.endPage - 1}" varStatus="status">
+						<c:forEach begin="${pager.startPage}" end="${pager.endPage}" varStatus="status">
 							<c:choose>
 								<c:when test="${(status.index-1) eq page}">
 									<li class="selected">
@@ -61,7 +67,7 @@
 							</c:choose>
 									<a href="/mysite/board?page=${status.index - 1}">${status.index}</a></li>
 						</c:forEach>
-						<c:if test="${pager.endPage - pager.startPage >= 4}">
+						<c:if test="${boardSize == 25}">
 							<li><a href="/mysite/board?page=${pager.endPage}">▶</a></li>
 						</c:if>
 					</ul>

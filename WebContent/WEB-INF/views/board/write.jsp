@@ -17,6 +17,9 @@
 				<form class="board-form" method="post" action="/mysite/board">
 					<input type = "hidden" name = "a" value="write">
 					<input type = "hidden" name = "userno" value="${param.userno}"/>
+					<input type = "hidden" name = "groupno" value="<c:out value="${param.groupno}" default="0"/>"/>
+					<input type = "hidden" name = "otherno" value="<c:out value="${param.orderno}" default="0"/>"/>
+					<input type = "hidden" name = "depth" value="<c:out value="${param.depth}" default="0"/>"/>
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글쓰기</th>
