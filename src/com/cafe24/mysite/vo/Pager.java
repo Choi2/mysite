@@ -12,11 +12,14 @@ public class Pager {
 	public Pager(int currentGroupPage, int boardSize) {
 		this.startGroupPage = currentGroupPage;
 		this.startPage = (currentGroupPage * ConstantVariables.PAGE_SIZE) + 1;
-		this.endPage = this.startPage + (boardSize / ConstantVariables.PAGE_SIZE) - 1;
+		this.endPage = this.startPage + (boardSize / ConstantVariables.PAGE_SIZE);
+		this.endPage = (boardSize % ConstantVariables.PAGE_SIZE == 0) ? this.endPage - 1:  this.endPage; 
+		if(boardSize > ConstantVariables.GROUP_SIZE) {
+			this.endPage -= 1;
+		}
 		if(endPage < startPage) {
 			endPage = startPage;
 		}
-		// this.endPage = (boardSize % ConstantVariables.PAGE_SIZE == 0) ? this.endPage - 1:  this.endPage; 
 	}
 	
 	public int getStartGroupPage() {

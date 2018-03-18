@@ -15,18 +15,18 @@ public class BoardDao {
 
 	private static final String ID = "webdb";
 	private static final String PASSWORD = "webdb";
-	private static final String URL = "jdbc:mysql://localhost/webdb?autoReconnect=true&useSSL=false";
+	private static final String URL = "jdbc:mysql://localhost/webdb?autoReconnect=true&useSSL=false&characterEncoding=utf8";
 
 	private Connection getConnection() throws SQLException{
 		Connection conn = null;
 		try {
-			// 1. 드라이버 로딩^_^
+			// 1. �뱶�씪�씠踰� 濡쒕뵫^_^
 			Class.forName("com.mysql.jdbc.Driver");
 
-			// 2. 연결하기
+			// 2. �뿰寃고븯湲�
 			conn = DriverManager.getConnection(URL, ID, PASSWORD);
 		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패:" + e);
+			System.out.println("�뱶�씪�씠踰� 濡쒕뵫 �떎�뙣:" + e);
 		} 
 
 		return conn;
@@ -44,7 +44,7 @@ public class BoardDao {
 			
 			conn = getConnection();
 
-			// 4. SQL 실행
+			// 4. SQL �떎�뻾
 			String sql = "select * from board where no = ?";
 			
 			
@@ -64,9 +64,9 @@ public class BoardDao {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println("에러:" + e);
+			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// 자원정리(Clean-Up)
+			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (rs != null) {
 					rs.close();
@@ -93,30 +93,30 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			// 3. SQL 준비
+			// 3. SQL 以�鍮�
 			String sql = "delete from board where no=?";
-			pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+			pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 
-			// 4. 데이터 바인딩(binding)
+			// 4. �뜲�씠�꽣 諛붿씤�뵫(binding)
 			
 			pstmt.setInt(1, no);
 
-			// 5. SQL문 실행
-			int count = pstmt.executeUpdate(); //열의 갯수를 리턴함!
+			// 5. SQL臾� �떎�뻾
+			int count = pstmt.executeUpdate(); //�뿴�쓽 媛��닔瑜� 由ы꽩�븿!
 			
 			result = (count != 0);
 			
-			// 6. 결과 처리
+			// 6. 寃곌낵 泥섎━
 			if (count == 0) {
-				System.out.println("실패!");
+				System.out.println("�떎�뙣!");
 			} else {
-				System.out.println("성공!");
+				System.out.println("�꽦怨�!");
 			}
 
 		}  catch (SQLException e) {
-			System.out.println("에러:" + e);
+			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// 자원정리(Clean-Up)
+			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (pstmt != null) {
 					pstmt.close();
@@ -142,11 +142,11 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			// 3. SQL 준비
+			// 3. SQL 以�鍮�
 			String sql = "";
 			
 
-			// 4. 데이터 바인딩(binding)  
+			// 4. �뜲�씠�꽣 諛붿씤�뵫(binding)  
 
 			if(vo.getOrderNo() == 0) {
 				sql = "insert into board(no, title,content, read_count, reg_date, group_no, order_no, depth, user_no )  select \r\n" + 
@@ -155,18 +155,18 @@ public class BoardDao {
 						" ?, " + 
 						" 0, " + 
 						" now(), " + 
-						" max(no) + 1, " + 
+						" ifnull(max(no), 0) + 1, " + 
 						" 1, " + 
 						" 0, " + 
 						" ?  " +
 						" from board";
-				pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+				pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 				pstmt.setString(1, vo.getTitle());
 				pstmt.setString(2, vo.getContent());
 				pstmt.setLong(3, vo.getUserNo());
 			} else {
 				sql = "insert into board values(null, ?, ?, 0, now(), ?, ?, ?, ?)";
-				pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+				pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 				pstmt.setString(1, vo.getTitle());
 				pstmt.setString(2, vo.getContent());
 				pstmt.setLong(3, vo.getGroupNo());
@@ -175,22 +175,22 @@ public class BoardDao {
 				pstmt.setLong(6, vo.getUserNo());
 			}
 		
-			// 5. SQL문 실행
-			int count = pstmt.executeUpdate(); //열의 갯수를 리턴함!
+			// 5. SQL臾� �떎�뻾
+			int count = pstmt.executeUpdate(); //�뿴�쓽 媛��닔瑜� 由ы꽩�븿!
 			
 			result = (count != 0);
 			
-			// 6. 결과 처리
+			// 6. 寃곌낵 泥섎━
 			if (count == 0) {
-				System.out.println("실패!");
+				System.out.println("�떎�뙣!");
 			} else {
-				System.out.println("성공!");
+				System.out.println("�꽦怨�!");
 			}
 
 		}  catch (SQLException e) {
-			System.out.println("에러:" + e);
+			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// 자원정리(Clean-Up)
+			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (pstmt != null) {
 					pstmt.close();
@@ -215,30 +215,30 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			// 3. SQL 준비
+			// 3. SQL 以�鍮�
 
 			 String	sql = "insert into comment values(null, ?, now(), ?, ?)";
-				pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+				pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 				pstmt.setString(1, vo.getContent());
 				pstmt.setLong(2, vo.getBoardNo());
 				pstmt.setLong(3, vo.getUserNo());
 				
-			// 5. SQL문 실행
-			int count = pstmt.executeUpdate(); //열의 갯수를 리턴함!
+			// 5. SQL臾� �떎�뻾
+			int count = pstmt.executeUpdate(); //�뿴�쓽 媛��닔瑜� 由ы꽩�븿!
 			
 			result = (count != 0);
 			
-			// 6. 결과 처리
+			// 6. 寃곌낵 泥섎━
 			if (count == 0) {
-				System.out.println("실패!");
+				System.out.println("�떎�뙣!");
 			} else {
-				System.out.println("성공!");
+				System.out.println("�꽦怨�!");
 			}
 
 		}  catch (SQLException e) {
-			System.out.println("에러:" + e);
+			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// 자원정리(Clean-Up)
+			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (pstmt != null) {
 					pstmt.close();
@@ -266,7 +266,7 @@ public class BoardDao {
 			
 			conn = getConnection();
 
-			// 4. SQL 실행
+			// 4. SQL �떎�뻾
 			String sql = "select no,"
 					+ "  title, "
 					+ "  read_count, "
@@ -302,9 +302,9 @@ public class BoardDao {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println("에러:" + e);
+			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// 자원정리(Clean-Up)
+			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (rs != null) {
 					rs.close();
@@ -331,32 +331,32 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			// 3. SQL 준비
+			// 3. SQL 以�鍮�
 			String sql = "update board set title = ?, content = ? where no = ?";
-			pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+			pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 
-			// 4. 데이터 바인딩(binding)
+			// 4. �뜲�씠�꽣 諛붿씤�뵫(binding)
 			
 			pstmt.setString(1, vo.getTitle());
 			pstmt.setString(2, vo.getContent());
 			pstmt.setLong(3, vo.getNo());
 
-			// 5. SQL문 실행
-			int count = pstmt.executeUpdate(); //열의 갯수를 리턴함!
+			// 5. SQL臾� �떎�뻾
+			int count = pstmt.executeUpdate(); //�뿴�쓽 媛��닔瑜� 由ы꽩�븿!
 			
 			result = (count != 0);
 			
-			// 6. 결과 처리
+			// 6. 寃곌낵 泥섎━
 			if (count == 0) {
-				System.out.println("실패!");
+				System.out.println("�떎�뙣!");
 			} else {
-				System.out.println("성공!");
+				System.out.println("�꽦怨�!");
 			}
 
 		}  catch (SQLException e) {
-			System.out.println("에러:" + e);
+			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// 자원정리(Clean-Up)
+			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (pstmt != null) {
 					pstmt.close();
@@ -381,27 +381,27 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			// 3. SQL 준비
+			// 3. SQL 以�鍮�
 			String sql = "update board set read_count = read_count + 1  where no = ?";
-			pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+			pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 			
 			pstmt.setLong(1, no);
-			// 5. SQL문 실행
-			int count = pstmt.executeUpdate(); //열의 갯수를 리턴함!
+			// 5. SQL臾� �떎�뻾
+			int count = pstmt.executeUpdate(); //�뿴�쓽 媛��닔瑜� 由ы꽩�븿!
 			
 			result = (count != 0);
 			
-			// 6. 결과 처리
+			// 6. 寃곌낵 泥섎━
 			if (count == 0) {
-				System.out.println("실패!");
+				System.out.println("�떎�뙣!");
 			} else {
-				System.out.println("성공!");
+				System.out.println("�꽦怨�!");
 			}
 
 		}  catch (SQLException e) {
-			System.out.println("에러:" + e);
+			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// 자원정리(Clean-Up)
+			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (pstmt != null) {
 					pstmt.close();
@@ -426,12 +426,12 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			// 3. SQL 준비
+			// 3. SQL 以�鍮�
 			String sql = "select * from board limit ?, 26";
-			pstmt = conn.prepareStatement(sql); // 준비된 것이지 이 상태에서 커리날리면 오류 걸림
+			pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 			
 			pstmt.setInt(1, currentGroupPage);
-			// 5. SQL문 실행
+			// 5. SQL臾� �떎�뻾
 			rs = pstmt.executeQuery(); 
 			
 			
@@ -441,9 +441,9 @@ public class BoardDao {
 			
 
 		}  catch (SQLException e) {
-			System.out.println("에러:" + e);
+			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// 자원정리(Clean-Up)
+			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (pstmt != null) {
 					pstmt.close();
@@ -470,7 +470,7 @@ public class BoardDao {
 			
 			conn = getConnection();
 
-			// 4. SQL 실행
+			// 4. SQL �떎�뻾
 			String sql = "select * from comment";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -488,9 +488,9 @@ public class BoardDao {
 			}
 			
 		} catch (SQLException e) {
-			System.out.println("에러:" + e);
+			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// 자원정리(Clean-Up)
+			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (rs != null) {
 					rs.close();
