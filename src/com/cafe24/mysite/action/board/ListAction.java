@@ -29,7 +29,15 @@ public class ListAction implements Action{
 		int boardSize = dao.getCount(currentGroupPage * ConstantVariables.GROUP_SIZE);
 /*		System.out.println("size = " + boardSize);*/
 		Pager pager = new Pager(currentGroupPage, boardSize);
-		List<BoardVo> list = dao.getList(currentDataSizePerPage);
+		String word = request.getParameter("word");
+		
+		if(word != null && !word.equals("")) {
+			word = "%" + word + "%";
+		} else {
+			word = "";
+		}
+		
+		List<BoardVo> list = dao.getList(currentDataSizePerPage, word);
 
 		HttpSession session = request.getSession();
 		
@@ -40,7 +48,8 @@ public class ListAction implements Action{
 		request.setAttribute("pager", pager);
 		request.setAttribute("boardSize", boardSize);
 		request.setAttribute("page", currentPage);
-/*		System.out.println(pager);*/
+		request.setAttribute("word", word);
+		System.out.println(pager);
 		//forwarding
 		WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
 	}

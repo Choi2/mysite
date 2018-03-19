@@ -34,7 +34,7 @@
 				<div class="bottom">
 					<a href="/mysite/board">글목록</a>
 					<c:if test="${sessionScope.authUser ne null}">
-						<a href="/mysite/board?a=writeform&userno=${sessionScope.authUser.no}&groupno=${vo.no}&orderno=${vo.orderNo}&depth=${vo.depth}">답글</a>
+						<a href="/mysite/board?a=writeform&userno=${sessionScope.authUser.no}&groupno=${vo.groupNo}&orderno=${vo.orderNo}&depth=${vo.depth}">답글</a>
 					</c:if>
 					<c:if test="${sessionScope.authUser.no eq vo.userNo}">
 						<a href="/mysite/board?a=modifyform&no=${vo.no}">글수정</a>

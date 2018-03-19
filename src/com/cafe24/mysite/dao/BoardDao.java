@@ -300,7 +300,7 @@ public class BoardDao {
 	}
 	
 
-	public List<BoardVo> getList(int currentDataSizePerPage) {
+	public List<BoardVo> getList(int currentDataSizePerPage, String word) {
 		List<BoardVo> list = new ArrayList<BoardVo>();
 
 		Connection conn = null;
@@ -324,13 +324,24 @@ public class BoardDao {
 					+ " @rownum := @rownum + 1 as RNUM "
 					+ " from board,"
 					+ " (select @rownum :=0) as R "
+					+ " where title like ? "
 					+ " order by group_no desc,"
 					+ " depth, "
 					+ " order_no "
 					+ " limit ?, 5 ";
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, currentDataSizePerPage);
+			
+			if(word.equals("")) {
+				sql = sql.replace("where title like ? ", "");
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, currentDataSizePerPage);
+			} else {		
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, word);
+				pstmt.setInt(2, currentDataSizePerPage);
+			}
+			
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {

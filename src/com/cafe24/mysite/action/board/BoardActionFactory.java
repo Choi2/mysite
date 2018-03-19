@@ -8,6 +8,7 @@ public class BoardActionFactory extends AbstractActionFactory {
 	@Override
 	public Action getAction(String actionName) {
 		Action action = null;
+	
 		if("write".equals(actionName)) {
 			action = new AddAction();
 		} else if("modify".equals(actionName)) {

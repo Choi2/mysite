@@ -14,10 +14,11 @@
 		<c:import url="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="board">
-				<form id="search_form" action="" method="post">
-					<input type="text" id="kwd" name="kwd" value="">
+				<form id="search_form" action="/mysite/board" method="post">
+					<input type="text" id="word" name="word" value="">
 					<input type="submit" value="찾기">
 					<input type="hidden" name="page" value="${page}"/>
+					<input type="hidden" name="a" value="searchword"/>
 				</form>
 				<table class="tbl-ex">
 					<tr>
@@ -62,21 +63,20 @@
 				<div class="pager">
 					<ul>
 						<c:if test="${pager.startGroupPage > 0}">
-							<li><a href="/mysite/board?page=${pager.startPage - 2}">◀</a></li>
+							<li><a href="/mysite/board?page=${pager.startPage - 2}&word=${word}">◀</a></li>
 						</c:if>
 						<c:forEach begin="${pager.startPage}" end="${pager.endPage}" varStatus="status">
-							<c:choose>
-								<c:when test="${(status.index-1) eq page}">
-									<li class="selected">
-								</c:when>
-								<c:otherwise>
-									<li>
-								</c:otherwise>
-							</c:choose>
-									<a href="/mysite/board?page=${status.index - 1}">${status.index}</a></li>
+				
+						<li class="selected">
+						<a href="/mysite/board?page=${status.index - 1}&word=${word}">${status.index}</a></li>
 						</c:forEach>
+						
+						<c:forEach begin ="${5 - pager.endPage}" end = '5'  varStatus="status">
+							<li style="color:gray;">${status.index}</li>
+						</c:forEach>
+						
 						<c:if test="${boardSize > 25}">
-							<li><a href="/mysite/board?page=${pager.endPage}">▶</a></li>
+							<li><a href="/mysite/board?page=${pager.endPage}&word=${word}">▶</a></li>
 						</c:if>
 					</ul>
 				</div>
