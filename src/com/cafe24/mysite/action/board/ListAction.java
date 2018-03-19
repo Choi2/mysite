@@ -18,8 +18,6 @@ import com.cafe24.web.constant.ConstantVariables;
 
 public class ListAction implements Action{
 
-
-	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BoardDao dao = new BoardDao();
@@ -29,12 +27,10 @@ public class ListAction implements Action{
 		int currentDataSizePerPage = currentPage * ConstantVariables.PAGE_SIZE;
 		int currentGroupPage = currentPage / ConstantVariables.PAGE_SIZE;
 		int boardSize = dao.getCount(currentGroupPage * ConstantVariables.GROUP_SIZE);
-		System.out.println("size = " + boardSize);
+/*		System.out.println("size = " + boardSize);*/
 		Pager pager = new Pager(currentGroupPage, boardSize);
 		List<BoardVo> list = dao.getList(currentDataSizePerPage);
-		
-		
-		
+
 		HttpSession session = request.getSession();
 		
 		UserVo vo = (UserVo) session.getAttribute("authUser");
@@ -44,7 +40,7 @@ public class ListAction implements Action{
 		request.setAttribute("pager", pager);
 		request.setAttribute("boardSize", boardSize);
 		request.setAttribute("page", currentPage);
-		System.out.println(pager);
+/*		System.out.println(pager);*/
 		//forwarding
 		WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
 	}

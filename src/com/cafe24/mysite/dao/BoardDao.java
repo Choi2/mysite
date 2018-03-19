@@ -56,11 +56,12 @@ public class BoardDao {
 				result.setNo(rs.getLong(1));
 				result.setTitle(rs.getString(2));
 				result.setContent(rs.getString(3));
-				result.setRegDate(rs.getString(5));
+				result.setRegDate(rs.getDate(5));
 				result.setGroupNo(rs.getInt(6));
 				result.setOrderNo(rs.getInt(7));
 				result.setDepth(rs.getInt(8));
 				result.setUserNo(rs.getInt(9));
+				result.setBoardDelete(rs.getInt(10));
 			}
 			
 		} catch (SQLException e) {
@@ -84,8 +85,60 @@ public class BoardDao {
 
 		return result;
 	}
+	
+	
+	public CommentVo getComment(Long no) {
 
-	public boolean delete(int no) {
+		CommentVo result = new CommentVo();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			
+			conn = getConnection();
+
+			// 4. SQL �떎�뻾
+			String sql = "select * from comment where no = ?";
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, no);
+			rs = pstmt.executeQuery();
+
+			if(rs.next()) {
+				result.setNo(rs.getLong(1));
+				result.setContent(rs.getString(2));
+				result.setRegDate(rs.getDate(3));
+				result.setBoardNo(rs.getInt(4));
+				result.setUserNo(rs.getLong(5));
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("�뿉�윭:" + e);
+		} finally {
+			// �옄�썝�젙由�(Clean-Up)
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+	
+
+	public boolean delete(long no) {
 		boolean result = false;
 		Connection conn = null;
 
@@ -93,30 +146,21 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			// 3. SQL 以�鍮�
-			String sql = "delete from board where no=?";
-			pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 
-			// 4. �뜲�씠�꽣 諛붿씤�뵫(binding)
+			String sql = "update board set board_delete = 1 where no = ?";// "delete from board where no=?";
+			pstmt = conn.prepareStatement(sql); 
+
 			
-			pstmt.setInt(1, no);
+			pstmt.setLong(1, no);
 
-			// 5. SQL臾� �떎�뻾
-			int count = pstmt.executeUpdate(); //�뿴�쓽 媛��닔瑜� 由ы꽩�븿!
+			int count = pstmt.executeUpdate();
 			
 			result = (count != 0);
-			
-			// 6. 寃곌낵 泥섎━
-			if (count == 0) {
-				System.out.println("�떎�뙣!");
-			} else {
-				System.out.println("�꽦怨�!");
-			}
 
 		}  catch (SQLException e) {
-			System.out.println("�뿉�윭:" + e);
+			System.out.println("실패 :" + e);
 		} finally {
-			// �옄�썝�젙由�(Clean-Up)
+
 			try {
 				if (pstmt != null) {
 					pstmt.close();
@@ -149,7 +193,7 @@ public class BoardDao {
 			// 4. �뜲�씠�꽣 諛붿씤�뵫(binding)  
 
 			if(vo.getOrderNo() == 0) {
-				sql = "insert into board(no, title,content, read_count, reg_date, group_no, order_no, depth, user_no )  select \r\n" + 
+				sql = "insert into board(no, title,content, read_count, reg_date, group_no, order_no, depth, user_no, board_delete )  select \r\n" + 
 						" null, " + 
 						" ?, " + 
 						" ?, " + 
@@ -158,14 +202,15 @@ public class BoardDao {
 						" ifnull(max(no), 0) + 1, " + 
 						" 1, " + 
 						" 0, " + 
-						" ?  " +
+						" ?,  " +
+						" 0 " +
 						" from board";
 				pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 				pstmt.setString(1, vo.getTitle());
 				pstmt.setString(2, vo.getContent());
 				pstmt.setLong(3, vo.getUserNo());
 			} else {
-				sql = "insert into board values(null, ?, ?, 0, now(), ?, ?, ?, ?)";
+				sql = "insert into board values(null, ?, ?, 0, now(), ?, ?, ?, ?, 0)";
 				pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
 				pstmt.setString(1, vo.getTitle());
 				pstmt.setString(2, vo.getContent());
@@ -182,9 +227,9 @@ public class BoardDao {
 			
 			// 6. 寃곌낵 泥섎━
 			if (count == 0) {
-				System.out.println("�떎�뙣!");
+				System.out.println("성공!");
 			} else {
-				System.out.println("�꽦怨�!");
+				System.out.println("실패!");
 			}
 
 		}  catch (SQLException e) {
@@ -275,12 +320,13 @@ public class BoardDao {
 					+ "  order_no, "
 					+ "  depth, "
 					+ "  user_no, "
+					+ "  board_delete, "
 					+ " @rownum := @rownum + 1 as RNUM "
 					+ " from board,"
 					+ " (select @rownum :=0) as R "
 					+ " order by group_no desc,"
-					+ " order_no,"
-					+ " depth"
+					+ " depth, "
+					+ " order_no "
 					+ " limit ?, 5 ";
 			
 			pstmt = conn.prepareStatement(sql);
@@ -292,13 +338,15 @@ public class BoardDao {
 				vo.setNo(rs.getLong(1));
 				vo.setTitle(rs.getString(2));
 				vo.setReadCount(rs.getInt(3));
-				vo.setRegDate(rs.getString(4));
+				vo.setRegDate(rs.getDate(4));
 				vo.setGroupNo(rs.getLong(5));
 				vo.setOrderNo(rs.getLong(6));
 				vo.setDepth(rs.getLong(7));
 				vo.setUserNo(rs.getLong(8));
+				vo.setBoardDelete(rs.getInt(9));
 				vo.setName(new UserDao().get(rs.getLong(8)).getName());
 				list.add(vo);
+			//	System.out.println(vo);
 			}
 			
 		} catch (SQLException e) {
@@ -322,6 +370,55 @@ public class BoardDao {
 
 		return list;
 	}
+	
+	
+	public boolean deleteComment(long no) {
+		boolean result = false;
+		Connection conn = null;
+
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = getConnection();
+			// 3. SQL 以�鍮�
+			String sql = "delete from comment where no=?";
+			pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
+
+			// 4. �뜲�씠�꽣 諛붿씤�뵫(binding)
+			
+			pstmt.setLong(1, no);
+
+			// 5. SQL臾� �떎�뻾
+			int count = pstmt.executeUpdate(); //�뿴�쓽 媛��닔瑜� 由ы꽩�븿!
+			
+			result = (count != 0);
+			
+			// 6. 寃곌낵 泥섎━
+			if (count == 0) {
+				System.out.println("성공!");
+			} else {
+				System.out.println("실패!");
+			}
+
+		}  catch (SQLException e) {
+			System.out.println("�뿉�윭:" + e);
+		} finally {
+			// �옄�썝�젙由�(Clean-Up)
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+	
 	
 	public boolean update(BoardVo vo) {
 		boolean result = false;
@@ -350,7 +447,7 @@ public class BoardDao {
 			if (count == 0) {
 				System.out.println("�떎�뙣!");
 			} else {
-				System.out.println("�꽦怨�!");
+				System.out.println("실패!");
 			}
 
 		}  catch (SQLException e) {
@@ -381,27 +478,23 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			// 3. SQL 以�鍮�
 			String sql = "update board set read_count = read_count + 1  where no = ?";
-			pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
+			pstmt = conn.prepareStatement(sql); 
 			
 			pstmt.setLong(1, no);
-			// 5. SQL臾� �떎�뻾
-			int count = pstmt.executeUpdate(); //�뿴�쓽 媛��닔瑜� 由ы꽩�븿!
+			int count = pstmt.executeUpdate(); 
 			
 			result = (count != 0);
-			
-			// 6. 寃곌낵 泥섎━
+
 			if (count == 0) {
-				System.out.println("�떎�뙣!");
+				System.out.println("성공!");
 			} else {
-				System.out.println("�꽦怨�!");
+				System.out.println("실패!");
 			}
 
 		}  catch (SQLException e) {
 			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// �옄�썝�젙由�(Clean-Up)
 			try {
 				if (pstmt != null) {
 					pstmt.close();
@@ -426,12 +519,12 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			// 3. SQL 以�鍮�
+
 			String sql = "select * from board limit ?, 26";
-			pstmt = conn.prepareStatement(sql); // 以�鍮꾨맂 寃껋씠吏� �씠 �긽�깭�뿉�꽌 而ㅻ━�궇由щ㈃ �삤瑜� 嫄몃┝
+			pstmt = conn.prepareStatement(sql); 
 			
 			pstmt.setInt(1, currentGroupPage);
-			// 5. SQL臾� �떎�뻾
+
 			rs = pstmt.executeQuery(); 
 			
 			
@@ -459,7 +552,7 @@ public class BoardDao {
 		return 0;
 	}
 
-	public List<CommentVo> getCommentList() {
+	public List<CommentVo> getCommentList(long no) {
 		List<CommentVo> list = new ArrayList<CommentVo>();
 
 		Connection conn = null;
@@ -470,17 +563,17 @@ public class BoardDao {
 			
 			conn = getConnection();
 
-			// 4. SQL �떎�뻾
-			String sql = "select * from comment";
+			String sql = "select * from comment where board_no = ?";
 			
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, no);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
 				CommentVo vo = new CommentVo();
 				vo.setNo(rs.getLong(1));
 				vo.setContent(rs.getString(2));
-				vo.setRegDate(rs.getString(3));
+				vo.setRegDate(rs.getDate(3));
 				vo.setBoardNo(rs.getLong(4));
 				vo.setUserNo(rs.getLong(5));
 				vo.setName(new UserDao().get(rs.getLong(5)).getName());
@@ -490,7 +583,7 @@ public class BoardDao {
 		} catch (SQLException e) {
 			System.out.println("�뿉�윭:" + e);
 		} finally {
-			// �옄�썝�젙由�(Clean-Up)
+			
 			try {
 				if (rs != null) {
 					rs.close();

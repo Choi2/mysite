@@ -8,7 +8,6 @@ public class BoardActionFactory extends AbstractActionFactory {
 	@Override
 	public Action getAction(String actionName) {
 		Action action = null;
-
 		if("write".equals(actionName)) {
 			action = new AddAction();
 		} else if("modify".equals(actionName)) {
@@ -19,6 +18,8 @@ public class BoardActionFactory extends AbstractActionFactory {
 			action = new ModifyFormAction();
 		} else if("insertcomment".equals(actionName)) {
 			action = new InsertCommentAction();
+		} else if("deletecomment".equals(actionName)) {
+			action = new DeleteCommentAction();
 		} else if("delete".equals(actionName)) {
 			action = new DeleteAction();
 		} else if("view".equals(actionName)) {

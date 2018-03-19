@@ -1,16 +1,19 @@
 package com.cafe24.mysite.vo;
 
+import java.util.Date;
+
 public class BoardVo {
 	private long no;
 	private String title;
 	private String content;
 	private int readCount;
-	private String regDate;
+	private Date regDate;
 	private long userNo;
 	private String name;
 	private long groupNo;
 	private long orderNo;
 	private long depth;
+	private int boardDelete;
 	
 	public long getNo() {
 		return no;
@@ -36,10 +39,10 @@ public class BoardVo {
 	public void setReadCount(int readCount) {
 		this.readCount = readCount;
 	}
-	public String getRegDate() {
+	public Date getRegDate() {
 		return regDate;
 	}
-	public void setRegDate(String regDate) {
+	public void setRegDate(Date regDate) {
 		this.regDate = regDate;
 	}
 	public long getUserNo() {
@@ -73,11 +76,18 @@ public class BoardVo {
 		this.depth = depth;
 	}
 	
+	public int getBoardDelete() {
+		return boardDelete;
+	}
+	public void setBoardDelete(int boardDelete) {
+		this.boardDelete = boardDelete;
+	}
 	@Override
 	public String toString() {
 		return "BoardVo [no=" + no + ", title=" + title + ", content=" + content + ", readCount=" + readCount
 				+ ", regDate=" + regDate + ", userNo=" + userNo + ", name=" + name + ", groupNo=" + groupNo
-				+ ", orderNo=" + orderNo + ", depth=" + depth + "]";
+				+ ", orderNo=" + orderNo + ", depth=" + depth + ", boardDelete=" + boardDelete + "]";
 	}
+
 	
 }

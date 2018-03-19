@@ -36,14 +36,22 @@
 							<c:if test="${vo.depth > 0}">
 								<img src="/mysite/assets/images/reply.png"/>
 							</c:if>
-								<a href="/mysite/board?a=view&no=${vo.no}">${vo.title}</a>
+								<c:choose>
+									<c:when test="${vo.boardDelete == 1}">
+										<span style="font-weight:bold;">지워진 글입니다.</span>
+									</c:when>
+									<c:otherwise>
+										<a href="/mysite/board?a=view&no=${vo.no}">${vo.title}</a>
+									</c:otherwise>
+								</c:choose>
 							</td>
 
 							<td>${vo.name}</td>
 							<td>${vo.readCount}</td>
-							<td>${vo.regDate}</td>
+							<td><fmt:formatDate value="${vo.regDate}" pattern="yyyy-MM-dd"/></td> 
+
 							<td>
-								<c:if test="${sessionScope.authUser.no eq vo.userNo}">
+								<c:if test="${(sessionScope.authUser.no eq vo.userNo) and vo.boardDelete == 0}">
 									<a href="/mysite/board?a=delete&no=${vo.no}" class="del">삭제</a>
 								</c:if>
 							</td>

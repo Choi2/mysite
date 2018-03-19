@@ -57,7 +57,7 @@ public class UserDao {
 				result.setEmail(rs.getString(3));
 				result.setPassword(rs.getString(4));
 				result.setGender(rs.getString(5));
-				result.setJoinDate(rs.getString(6));
+				result.setJoinDate(rs.getDate(6));
 			}
 			
 		} catch (SQLException e) {
@@ -260,7 +260,7 @@ public class UserDao {
 				vo.setName(rs.getString(2));
 				vo.setEmail(rs.getString(3));
 				vo.setGender(rs.getString(5));
-				vo.setJoinDate(rs.getString(6));
+				vo.setJoinDate(rs.getDate(6));
 				list.add(vo);
 			}
 			

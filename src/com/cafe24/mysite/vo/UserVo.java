@@ -1,12 +1,14 @@
 package com.cafe24.mysite.vo;
 
+import java.util.Date;
+
 public class UserVo {
 	private Long no;
 	private String name;
 	private String email;
 	private String password;
 	private String gender;
-	private String joinDate;
+	private Date joinDate;
 	
 	public Long getNo() {
 		return no;
@@ -38,10 +40,10 @@ public class UserVo {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public String getJoinDate() {
+	public Date getJoinDate() {
 		return joinDate;
 	}
-	public void setJoinDate(String joinDate) {
+	public void setJoinDate(Date joinDate) {
 		this.joinDate = joinDate;
 	}
 	

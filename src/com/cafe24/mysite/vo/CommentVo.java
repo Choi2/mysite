@@ -1,9 +1,11 @@
 package com.cafe24.mysite.vo;
 
+import java.util.Date;
+
 public class CommentVo {
 	private long no;
 	private String content;
-	private String regDate;
+	private Date regDate;
 	private long boardNo;
 	private long userNo;
 	private String name;
@@ -20,10 +22,10 @@ public class CommentVo {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public String getRegDate() {
+	public Date getRegDate() {
 		return regDate;
 	}
-	public void setRegDate(String regDate) {
+	public void setRegDate(Date regDate) {
 		this.regDate = regDate;
 	}
 	public long getBoardNo() {
