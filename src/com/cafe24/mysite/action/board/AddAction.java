@@ -20,6 +20,7 @@ public class AddAction implements Action {
 		String content = request.getParameter("content");
 		int groupNo = Integer.parseInt(request.getParameter("groupno"));
 		int orderNo = Integer.parseInt(request.getParameter("otherno"));
+		int parentNo = Integer.parseInt(request.getParameter("parentno"));
 		int depth = Integer.parseInt(request.getParameter("depth")) ;
 
 		BoardDao dao = new BoardDao();
@@ -29,9 +30,13 @@ public class AddAction implements Action {
 		vo.setContent(content);	
 		vo.setGroupNo(groupNo);
 		vo.setOrderNo(orderNo);
+		vo.setParentNo(parentNo);
 		vo.setDepth(depth);
+		dao.arrangeList(vo);
 		dao.insert(vo);
-		System.out.println(vo);
+
+		
+
 		WebUtil.redirect(request, response, "/mysite/board");
 	}
 

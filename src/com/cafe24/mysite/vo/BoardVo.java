@@ -12,6 +12,7 @@ public class BoardVo {
 	private String name;
 	private long groupNo;
 	private long orderNo;
+	private long parentNo;
 	private long depth;
 	private int boardDelete;
 	
@@ -82,12 +83,20 @@ public class BoardVo {
 	public void setBoardDelete(int boardDelete) {
 		this.boardDelete = boardDelete;
 	}
+	public long getParentNo() {
+		return parentNo;
+	}
+	public void setParentNo(long parentNo) {
+		this.parentNo = parentNo;
+	}
 	@Override
 	public String toString() {
 		return "BoardVo [no=" + no + ", title=" + title + ", content=" + content + ", readCount=" + readCount
 				+ ", regDate=" + regDate + ", userNo=" + userNo + ", name=" + name + ", groupNo=" + groupNo
-				+ ", orderNo=" + orderNo + ", depth=" + depth + ", boardDelete=" + boardDelete + "]";
+				+ ", orderNo=" + orderNo + ", parentNo=" + parentNo + ", depth=" + depth + ", boardDelete="
+				+ boardDelete + "]";
 	}
+
 
 	
 }

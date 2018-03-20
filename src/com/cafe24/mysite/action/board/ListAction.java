@@ -49,8 +49,7 @@ public class ListAction implements Action{
 		request.setAttribute("boardSize", boardSize);
 		request.setAttribute("page", currentPage);
 		request.setAttribute("word", word);
-		System.out.println(pager);
-		//forwarding
+
 		WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
 	}
 

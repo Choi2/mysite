@@ -19,6 +19,7 @@
 					<input type = "hidden" name = "userno" value="${param.userno}"/>
 					<input type = "hidden" name = "groupno" value="<c:out value="${param.groupno}" default="0"/>"/>
 					<input type = "hidden" name = "otherno" value="<c:out value="${param.orderno}" default="0"/>"/>
+					<input type = "hidden" name = "parentno" value="<c:out value="${param.parentno}" default="0"/>"/>
 					<input type = "hidden" name = "depth" value="<c:out value="${param.depth}" default="0"/>"/>
 					<table class="tbl-ex">
 						<tr>

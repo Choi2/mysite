@@ -71,7 +71,7 @@
 						<a href="/mysite/board?page=${status.index - 1}&word=${word}">${status.index}</a></li>
 						</c:forEach>
 						
-						<c:forEach begin ="${5 - pager.endPage}" end = '5'  varStatus="status">
+						<c:forEach begin ="${pager.endPage + 1}" end = '5'  varStatus="status">
 							<li style="color:gray;">${status.index}</li>
 						</c:forEach>
 						

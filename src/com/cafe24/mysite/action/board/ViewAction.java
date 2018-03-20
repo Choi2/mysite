@@ -23,10 +23,12 @@ public class ViewAction implements Action {
 		BoardDao dao = new BoardDao();
 		dao.updateReadCount(no);
 		BoardVo vo = dao.get(no);
+		
 		if(vo.getBoardDelete() == 1) {
 			WebUtil.forward(request, response, "/WEB-INF/views/errors/404.jsp");
 			return ;
 		}
+		
 		List<CommentVo> commentList = dao.getCommentList(no);
 		vo.setContent(vo.getContent().replaceAll("\n", "<br/>"));
 		request.setAttribute("vo", vo);
